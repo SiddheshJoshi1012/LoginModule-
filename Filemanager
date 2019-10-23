@@ -1,0 +1,39 @@
+class UserAccount:
+    def __init__(self,n):
+        try:
+            self.fh= open(n,'r+')
+        except FileNotFoundError:
+            self.fh= open(n,'w+')
+
+
+    def __del__(self):
+        print("Closing the file")
+        self.fh.close()
+
+    def UserInfo(self,un):
+        self.fh.seek(0,0)
+        y = un.lower()
+        for x in self.fh:
+            if x.lower().startswith(y):
+                return x
+            return None
+
+    def AddUser(self,un,pwd,money=100):
+        if self.UserInfo(un) is None:
+            self.fh.seek(0,2)
+            string ='%s,%s,%d\n'%(un,pwd,money)
+            self.fh.write(string)
+        else:
+            raise Exception('Duplicate User Name')
+
+    def login(self,un,pwd):
+        x=self.UserInfo(un)
+        if x is not None:
+            ls=x.split(',')
+            if ls[1]==pwd:
+                return ls[2].strip()
+            else:
+                return False
+
+        else:
+            return False
